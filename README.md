@@ -1,7 +1,9 @@
-Thank you very much for taking the time to report a bug to us, we greatly
-appreciate it. Even more so, since you are about to take the time to create an
-MCVE (Minimal Complete Verifiable Example). Thanks to you, we can make jOOQ an
-even better product!
+# How to use this fork
+- setup docker for postgres
+  - Build image `docker build -t jooq-pg .`
+  - Run image `docker run -p 5432:5432 jooq-pg`
+- Note: I had to move the sources into the `src`-folder in order to make the binding work
+- see the test fail on inserting 
 
 ## How to use this project to prepare your MCVE
 

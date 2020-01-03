@@ -37,19 +37,19 @@
  */
 package org.jooq.mcve.test;
 
-import static org.jooq.mcve.Tables.TEST;
-import static org.junit.Assert.assertEquals;
+import binding.MyPojo;
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
+import org.jooq.mcve.Tables;
+import org.jooq.mcve.tables.records.Issue_9679Record;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-
-import org.jooq.DSLContext;
-import org.jooq.impl.DSL;
-import org.jooq.mcve.tables.records.TestRecord;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.Arrays;
 
 public class MCVETest {
 
@@ -58,7 +58,7 @@ public class MCVETest {
 
     @Before
     public void setup() throws Exception {
-        connection = DriverManager.getConnection("jdbc:h2:~/mcve", "sa", "");
+        connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/postgres", "jooq_user", "test");
         ctx = DSL.using(connection);
     }
 
@@ -71,14 +71,8 @@ public class MCVETest {
 
     @Test
     public void mcveTest() {
-        TestRecord result =
-        ctx.insertInto(TEST)
-           .columns(TEST.VALUE)
-           .values(42)
-           .returning(TEST.ID)
-           .fetchOne();
-
-        result.refresh();
-        assertEquals(42, (int) result.getValue());
+        Issue_9679Record record = ctx.selectFrom(Tables.ISSUE_9679).fetchOne();
+        Assert.assertNotNull(record);
+        Assert.assertEquals(1,ctx.insertInto(Tables.ISSUE_9679).set(Tables.ISSUE_9679.PAYLOAD, Arrays.asList(new MyPojo("bar2"),new MyPojo("hi lukas"))).execute());
     }
 }
